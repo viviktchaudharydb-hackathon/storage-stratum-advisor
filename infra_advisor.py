@@ -25,7 +25,7 @@ from google.genai import types as genai_types
 from domains import DOMAINS, DEPLOYMENTS, get_matching_vendors
 from advisor_extensions import ProcurementRAG, TCOEngine
 from compliance import run_compliance_checks
-from arb_report import build_arb_document
+from arb_report import build_arb_document, build_blueprint_arb_document
 from blueprints import BLUEPRINTS, derive_components, analyze_synergy, default_params
 
 logging.basicConfig(level=logging.INFO)
@@ -820,8 +820,35 @@ def render_solution_results(payload: dict, results: list):
                         "rationale": c["rationale"],
                         "report": c["state"].get("final_report", {})} for c in results],
     }
-    st.download_button("📥 Stack Report (JSON)", json.dumps(export, indent=2, default=str),
-                       f"stack_{datetime.now():%Y%m%d_%H%M%S}.json", "application/json")
+    
+    cols = st.columns(2)
+    with cols[0]:
+        st.download_button("📥 Stack Report (JSON)", json.dumps(export, indent=2, default=str),
+                           f"stack_{datetime.now():%Y%m%d_%H%M%S}.json", "application/json", use_container_width=True)
+    
+    with cols[1]:
+        blueprint_name = payload["blueprint"]
+        bp = BLUEPRINTS[blueprint_name]
+        try:
+            docx_bytes = build_blueprint_arb_document(
+                blueprint_name=blueprint_name,
+                description=bp["description"],
+                driver_label=bp["driver"]["label"],
+                driver_value=payload["driver_value"],
+                params=payload.get("sizing_params", {}),
+                param_labels={k: v["label"] for k, v in bp.get("params", {}).items()},
+                component_results=results,
+                synergy=synergy,
+                fmt_money=TCOEngine.fmt,
+            )
+            st.download_button("📄 Download Solution ARB Record",
+                               data=docx_bytes,
+                               file_name=f"ARB_{blueprint_name.replace(' ', '_')}.docx",
+                               mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                               use_container_width=True)
+        except Exception as e:
+            logger.error(f"Blueprint ARB generation failed: {e}")
+            st.caption("Solution ARB document generation unavailable")
 
 
 def main():
@@ -903,10 +930,8 @@ def main():
 **Same workflow for every domain:**
 ```
 Market Intel (Google Search) → Architecture (Gemini) → Vendor Match
-                                                          ├─→ Procurement RAG → Evaluation + TCO Engine
-                                                          └─→ No Vendors → Guidance
-                                                                    ↓
-                                                                 Report
+    ├─→ Procurement RAG → Vendor Evaluation + TCO Engine → Compliance Guardrails → Report
+    └─→ No Vendors → Guidance ────────────────────────────────────────────────→ Report
 ```
 
 Adding a domain (Network, Backup Software, …) is a **data-only change** in `domains.py` -
