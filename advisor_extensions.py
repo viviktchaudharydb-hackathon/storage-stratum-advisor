@@ -139,6 +139,71 @@ class ProcurementRAG:
 
 
 # ==========================================================
+# Deterministic LLM-output validation
+# ==========================================================
+
+def validate_recommendations(
+    recs: List[Dict[str, Any]],
+    candidates: List[str],
+    max_recs: int = 4,
+) -> Tuple[List[Dict[str, Any]], List[str]]:
+    """Deterministic guard between Gemini and the downstream engines.
+
+    The LLM is only ever asked to rank vendors from the candidate list the
+    rule engine produced - so anything outside that list is drift, not
+    judgment. This validator enforces the contract in code rather than
+    relying on prompt behavior:
+
+      - name must be one of the candidates (registry-validated upstream);
+        anything else is dropped and reported
+      - fit_score is coerced to float and clamped to [0, 10]
+      - strengths / considerations are coerced to lists of non-empty strings
+      - duplicates are removed (first occurrence wins)
+      - output is re-sorted by clamped fit_score (stable), capped at max_recs
+
+    Returns (valid_recommendations, dropped_names). Pure function - unit
+    tested in tests/test_validation.py.
+    """
+    valid: List[Dict[str, Any]] = []
+    dropped: List[str] = []
+    seen = set()
+    candidate_set = set(candidates)
+
+    def _str_list(value: Any, cap: int = 4) -> List[str]:
+        if not isinstance(value, list):
+            return []
+        out = [str(s).strip() for s in value if str(s).strip()]
+        return out[:cap]
+
+    for rec in recs or []:
+        if not isinstance(rec, dict):
+            dropped.append(str(rec)[:60])
+            continue
+        name = str(rec.get("name", "")).strip()
+        if not name or name not in candidate_set:
+            dropped.append(name or "<unnamed>")
+            continue
+        if name in seen:
+            continue
+        seen.add(name)
+        try:
+            score = float(rec.get("fit_score", 0))
+        except (TypeError, ValueError):
+            score = 0.0
+        score = max(0.0, min(10.0, score))
+        valid.append({
+            **rec,
+            "name": name,
+            "fit_score": round(score, 1),
+            "strengths": _str_list(rec.get("strengths")),
+            "considerations": _str_list(rec.get("considerations")),
+        })
+
+    valid.sort(key=lambda r: r["fit_score"], reverse=True)
+    return valid[:max_recs], dropped
+
+
+# ==========================================================
 # Deterministic TCO Engine
 # ==========================================================
 

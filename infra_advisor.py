@@ -23,7 +23,7 @@ from google import genai
 from google.genai import types as genai_types
 
 from domains import DOMAINS, DEPLOYMENTS, get_matching_vendors
-from advisor_extensions import ProcurementRAG, TCOEngine
+from advisor_extensions import ProcurementRAG, TCOEngine, validate_recommendations
 from compliance import run_compliance_checks
 from arb_report import build_arb_document, build_blueprint_arb_document
 from blueprints import BLUEPRINTS, derive_components, analyze_synergy, default_params
@@ -320,6 +320,19 @@ def create_advisor_graph():
         procurement = state.get("procurement_context", [])
         recs = ai.evaluate_vendors(req, candidates, state.get("market_data", {}), procurement)
 
+        # Deterministic guard on the LLM output: only registry candidates
+        # survive, fit_score is clamped to 0-10, duplicates removed. The
+        # contract with Gemini is enforced in code, not just in the prompt.
+        dropped: List[str] = []
+        llm_failed = bool(recs) and recs[0].get("error")
+        if not llm_failed:
+            recs, dropped = validate_recommendations(recs, candidates)
+            if not recs:
+                recs = [{"name": "No Valid Recommendations", "fit_score": 0, "strengths": [],
+                         "considerations": ["The AI response contained no vendors from the "
+                                            "validated candidate list - please retry"],
+                         "error": "All recommendations rejected by validation"}]
+
         discounts = rag.negotiated_discounts(req.domain)
         vendor_db = DOMAINS[req.domain]["vendors"]
         tco_cfg = DOMAINS[req.domain]["tco"]
@@ -333,7 +346,8 @@ def create_advisor_graph():
         return {"current_step": "vendor_evaluation",
                 "vendor_recommendations": recs,
                 "tco_estimates": tco_estimates,
-                "messages": [f"✅ Evaluated {len(recs)} vendors (Gemini) · 💰 TCO computed for {len(tco_estimates)}"]}
+                "messages": [f"✅ Evaluated {len(recs)} vendors (Gemini, validated) · 💰 TCO computed for {len(tco_estimates)}"
+                             + (f" · 🚫 {len(dropped)} rejected by validator" if dropped else "")]}
 
     def explain_no_vendors(state: AgentState) -> dict:
         req = state["requirements"]
