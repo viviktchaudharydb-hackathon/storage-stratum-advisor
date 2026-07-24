@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 760" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6368"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="620" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#202124">Enterprise Infrastructure Advisor — GCP-Native, Multi-Domain</text>
+  <text x="620" y="56" text-anchor="middle" font-size="13" fill="#5f6368">AI where judgment helps · Deterministic code where auditability matters · Human sign-off where accountability lives</text>
+
+  <!-- Blueprint layer -->
+  <rect x="40" y="76" width="1160" height="64" rx="10" fill="#f3e8fd" stroke="#7627bb" stroke-width="1.5"/>
+  <text x="60" y="102" font-size="14" font-weight="700" fill="#7627bb">🧩 Solution Blueprints (deterministic sizing, cross-domain correlation)</text>
+  <text x="60" y="122" font-size="12" fill="#5f6368">AI/ML Training · Core Banking Modernization · Data Lake — one driver metric derives every component; editable assumptions; synergy &amp; bundle analysis</text>
+
+  <!-- Lane: AI -->
+  <rect x="40" y="156" width="1160" height="150" rx="10" fill="#e8f0fe" stroke="#1a56b8" stroke-width="1.5"/>
+  <text x="52" y="180" font-size="13" font-weight="700" fill="#1a56b8">AI LANE — Vertex AI Gemini (judgment, never numbers)</text>
+
+  <!-- AI nodes -->
+  <rect x="70" y="196" width="200" height="88" rx="8" fill="#ffffff" stroke="#1a56b8" stroke-width="1.5"/>
+  <text x="170" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">🔍 Market Intel</text>
+  <text x="170" y="240" text-anchor="middle" font-size="11" fill="#5f6368">Gemini + Google Search</text>
+  <text x="170" y="256" text-anchor="middle" font-size="11" fill="#5f6368">grounding, cited sources</text>
+
+  <rect x="320" y="196" width="200" height="88" rx="8" fill="#ffffff" stroke="#1a56b8" stroke-width="1.5"/>
+  <text x="420" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">🏗️ Architecture Analysis</text>
+  <text x="420" y="240" text-anchor="middle" font-size="11" fill="#5f6368">Gemini JSON mode</text>
+  <text x="420" y="256" text-anchor="middle" font-size="11" fill="#5f6368">pattern + recommendations</text>
+
+  <rect x="760" y="196" width="220" height="88" rx="8" fill="#ffffff" stroke="#7627bb" stroke-width="1.5"/>
+  <text x="870" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">🏢 Vendor Evaluation</text>
+  <text x="870" y="240" text-anchor="middle" font-size="11" fill="#5f6368">Gemini × RAG context</text>
+  <text x="870" y="256" text-anchor="middle" font-size="11" fill="#5f6368">fit scores, ranked shortlist</text>
+
+  <!-- Lane: Deterministic -->
+  <rect x="40" y="322" width="1160" height="212" rx="10" fill="#e6f4ea" stroke="#137333" stroke-width="1.5"/>
+  <text x="52" y="346" font-size="13" font-weight="700" fill="#137333">DETERMINISTIC LANE — auditable Python, no LLM</text>
+
+  <rect x="70" y="362" width="200" height="80" rx="8" fill="#ffffff" stroke="#137333" stroke-width="1.5"/>
+  <text x="170" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">⚙️ Vendor Match</text>
+  <text x="170" y="406" text-anchor="middle" font-size="11" fill="#5f6368">domain registry rules</text>
+  <text x="170" y="422" text-anchor="middle" font-size="11" fill="#5f6368">workload · deployment · scale</text>
+
+  <rect x="320" y="362" width="200" height="80" rx="8" fill="#ffffff" stroke="#137333" stroke-width="1.5"/>
+  <text x="420" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">📄 Procurement RAG</text>
+  <text x="420" y="406" text-anchor="middle" font-size="11" fill="#5f6368">Vertex embeddings</text>
+  <text x="420" y="422" text-anchor="middle" font-size="11" fill="#5f6368">agreements + discounts</text>
+
+  <rect x="570" y="362" width="200" height="80" rx="8" fill="#ffffff" stroke="#137333" stroke-width="1.5"/>
+  <text x="670" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">🧮 TCO Engine</text>
+  <text x="670" y="406" text-anchor="middle" font-size="11" fill="#5f6368">3-yr model, negotiated</text>
+  <text x="670" y="422" text-anchor="middle" font-size="11" fill="#5f6368">discounts, CapEx vs OpEx</text>
+
+  <rect x="820" y="362" width="200" height="80" rx="8" fill="#ffffff" stroke="#137333" stroke-width="1.5"/>
+  <text x="920" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">🛡️ Compliance Guardrails</text>
+  <text x="920" y="406" text-anchor="middle" font-size="11" fill="#5f6368">policy-as-code: Tier-1 SLA,</text>
+  <text x="920" y="422" text-anchor="middle" font-size="11" fill="#5f6368">residency, onboarding, concentration</text>
+
+  <text x="620" y="474" text-anchor="middle" font-size="12" font-weight="600" fill="#137333">Corpus: procurement .md docs (frontmatter: vendor · discount% · domain) — roadmap: Vertex AI RAG Engine over real PDFs in GCS</text>
+  <rect x="230" y="486" width="780" height="34" rx="8" fill="#ffffff" stroke="#137333" stroke-width="1" stroke-dasharray="5 4"/>
+  <text x="620" y="508" text-anchor="middle" font-size="12" fill="#5f6368">Domain Registry (domains.py): Storage · Server/Compute · Database · Middleware — adding a domain is a data-only change</text>
+
+  <!-- Lane: Human -->
+  <rect x="40" y="550" width="1160" height="96" rx="10" fill="#f1f3f4" stroke="#5f6368" stroke-width="1.5"/>
+  <text x="52" y="574" font-size="13" font-weight="700" fill="#3c4043">HUMAN LANE — accountability</text>
+
+  <rect x="320" y="586" width="280" height="48" rx="8" fill="#ffffff" stroke="#5f6368" stroke-width="1.5"/>
+  <text x="460" y="606" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">📋 Report + Provenance Badges</text>
+  <text x="460" y="624" text-anchor="middle" font-size="11" fill="#5f6368">every section labeled: LLM / RAG / rules / live web</text>
+
+  <rect x="660" y="586" width="300" height="48" rx="8" fill="#ffffff" stroke="#5f6368" stroke-width="1.5"/>
+  <text x="810" y="606" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">📄 ARB Decision Record (.docx)</text>
+  <text x="810" y="624" text-anchor="middle" font-size="11" fill="#5f6368">TCO tables · compliance badges · human sign-off block</text>
+
+  <!-- Flow arrows -->
+  <line x1="270" y1="240" x2="320" y2="240" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="420" y1="284" x2="240" y2="362" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="270" y1="402" x2="320" y2="402" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="470" y1="362" x2="800" y2="284" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="870" y1="284" x2="700" y2="362" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="770" y1="402" x2="820" y2="402" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="920" y1="442" x2="830" y2="586" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="460" y1="634" x2="460" y2="634" stroke="none"/>
+  <line x1="600" y1="610" x2="660" y2="610" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- GCP strip -->
+  <rect x="40" y="662" width="1160" height="72" rx="10" fill="#ffffff" stroke="#dadce0" stroke-width="1.5"/>
+  <text x="52" y="686" font-size="12" font-weight="700" fill="#3c4043">GCP SERVICE MAP</text>
+  <text x="52" y="712" font-size="12" fill="#5f6368">☁️ Cloud Run (Streamlit, asia-south1) · 🧠 Vertex AI Gemini 2.5 Flash · 🔍 Google Search grounding · 🔡 Vertex text-embedding-005 · 🔨 Cloud Build (source deploy) · 🔐 Service-account auth (workload@) — zero API keys</text>
+</svg>
