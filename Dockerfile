@@ -1,5 +1,3 @@
-arb_report.py          blueprints.py     data           deploy.sh1  domains.py  LICENSE           requirements.txt
-viviktchaudhary_gmail_com@cloudshell:~/storage-stratum-advisor (hack-team-storage-stratum)$ cat Dockerfile 
 FROM python:3.12-slim
 
 WORKDIR /app
