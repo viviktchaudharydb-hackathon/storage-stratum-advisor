@@ -10,7 +10,7 @@ import os
 import re
 import glob
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 import numpy as np
 
@@ -24,7 +24,7 @@ EMBED_MODEL = os.environ.get("EMBED_MODEL", "text-embedding-005")
 # Procurement corpus + RAG
 # ==========================================================
 
-def _parse_frontmatter(text: str) -> (Dict[str, str], str):
+def _parse_frontmatter(text: str) -> Tuple[Dict[str, str], str]:
     """Parse a simple '---' frontmatter block. Returns (metadata, body)."""
     meta: Dict[str, str] = {}
     body = text
@@ -85,10 +85,19 @@ class ProcurementRAG:
             logger.error(f"Embedding failed: {e}")
             return None
 
+    def _ensure_matrix(self) -> bool:
+        """Lazy retry: if the cold-start embedding failed (e.g. transient
+        Vertex error on Cloud Run cold start), try again on next use instead
+        of silently losing RAG until the container restarts."""
+        if self.matrix is None and self.docs:
+            logger.warning("Corpus matrix missing - retrying embedding")
+            self.matrix = self._embed([d["text"] for d in self.docs])
+        return self.matrix is not None
+
     def retrieve(self, query: str, top_k: int = 3) -> List[Dict[str, Any]]:
         """Return top_k docs with similarity scores. Empty list on failure -
         the workflow degrades gracefully to no procurement context."""
-        if self.matrix is None or not self.docs:
+        if not self.docs or not self._ensure_matrix():
             return []
         q = self._embed([query])
         if q is None:
@@ -121,9 +130,12 @@ class ProcurementRAG:
                     continue
         return discounts
 
-    def preferred_vendors(self) -> List[str]:
-        """Vendors with any active agreement doc - used to flag policy-preferred options."""
-        return list(self.negotiated_discounts().keys())
+    def preferred_vendors(self, domain: Optional[str] = None) -> List[str]:
+        """Vendors with an active agreement doc applicable to this domain.
+        Must use the same scoping as negotiated_discounts(), or the compliance
+        badge ('agreement on file') and the TCO discount contradict each other
+        (e.g. Dell's Storage framework leaking into a Database evaluation)."""
+        return list(self.negotiated_discounts(domain).keys())
 
 
 # ==========================================================
@@ -168,12 +180,18 @@ class TCOEngine:
         capacity_tb: int,
         discounts: Dict[str, float],
         tco_cfg: Optional[Dict[str, Any]] = None,
+        req_deployment: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Returns a structured 3-year TCO estimate for one vendor.
 
         tco_cfg (optional, from the domain registry) overrides the storage
         defaults: {list_rates, cloud_monthly_tiers, facilities_per_unit,
         migration_flat}. This keeps the engine domain-generic.
+
+        req_deployment: the USER'S selected deployment model. Pricing follows
+        the decision being made, not just the vendor's capability list: a
+        hybrid-capable vendor evaluated for a Cloud deployment is priced on
+        the cloud consumption tiers (OpEx, no facilities), not CapEx.
         """
         cfg = tco_cfg or {}
         list_rates = cfg.get("list_rates", cls.LIST_RATES)
@@ -181,11 +199,13 @@ class TCOEngine:
         facilities_per_unit = cfg.get("facilities_per_unit", cls.ONPREM_FACILITIES_PER_TB_3YR)
         migration_flat = cfg.get("migration_flat", cls.MIGRATION_FLAT)
 
-        deployments = vendor_meta.get("deployment", [])
-        is_cloud_only = deployments == ["cloud"]
+        deployments = set(vendor_meta.get("deployment", []))
+        is_cloud_only = deployments == {"cloud"}
+        user_wants_cloud = (req_deployment or "").lower() == "cloud"
+        price_as_cloud = is_cloud_only or (user_wants_cloud and "cloud" in deployments)
         discount = discounts.get(vendor_name, 0.0)
 
-        if is_cloud_only:
+        if price_as_cloud:
             monthly_rate = cls._cloud_rate(capacity_tb, cloud_tiers)
             base = monthly_rate * capacity_tb * 36
             facilities = 0
