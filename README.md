@@ -1,4 +1,7 @@
 # Enterprise Infrastructure Advisor
+<img width="1640" height="872" alt="image" src="https://github.com/user-attachments/assets/f7bdf535-5959-466b-b7cb-bffeb3ec7a80" />
+
+
 
 **One app for Storage · Server/Compute · Database · Middleware decisions.**
 
