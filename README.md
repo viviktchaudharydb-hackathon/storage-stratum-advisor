@@ -1,5 +1,6 @@
 # Enterprise Infrastructure Advisor
-<img width="1640" height="872" alt="image" src="https://github.com/user-attachments/assets/f7bdf535-5959-466b-b7cb-bffeb3ec7a80" />
+
+<img width="1447" height="897" alt="image" src="https://github.com/user-attachments/assets/531837f9-1de1-415b-be2b-8f0cf6823fe8" />
 
 
 
