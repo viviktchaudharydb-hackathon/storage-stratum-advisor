@@ -328,7 +328,8 @@ def create_advisor_graph():
             meta = vendor_db.get(rec.get("name", ""))
             if meta:
                 tco_estimates.append(
-                    TCOEngine.estimate(rec["name"], meta, req.capacity, discounts, tco_cfg))
+                    TCOEngine.estimate(rec["name"], meta, req.capacity, discounts, tco_cfg,
+                                       req_deployment=req.deployment))
         return {"current_step": "vendor_evaluation",
                 "vendor_recommendations": recs,
                 "tco_estimates": tco_estimates,
@@ -369,7 +370,7 @@ def create_advisor_graph():
             availability_target=req.availability_target,
             vendor_recommendations=recs,
             vendor_db=DOMAINS[req.domain]["vendors"],
-            preferred_vendors=rag.preferred_vendors(),
+            preferred_vendors=rag.preferred_vendors(req.domain),
             tco_estimates=state.get("tco_estimates", []),
         )
         warns = sum(1 for r in results if r["overall"] == "warn")
