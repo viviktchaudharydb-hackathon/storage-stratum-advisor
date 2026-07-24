@@ -8,7 +8,7 @@
 
 An intelligent, multi-domain infrastructure advisory platform powered by LangGraph, Vertex AI Gemini, Google Search grounding, and Procurement RAG, with a deterministic Total Cost of Ownership (TCO) engine.
 
-Entrypoint: `infra_advisor.py` (multi-domain). `storage_advisor.py` (storage-only v2) is kept for reference.
+Entrypoint: `infra_advisor.py` (multi-domain). 
 
 ## 🌟 Key Features
 
@@ -88,7 +88,7 @@ Results render as **PASS / REVIEW / FAIL** badges per vendor and feed directly i
 - **Identity**: IAP integration for internal SSO.
 - **Persistence**: Firestore integration for per-user report history.
 - **Real Documents**: Vertex AI RAG Engine over real procurement PDFs in GCS (replacing mock RAG).
-- **Live Integrations**: Seed the Domain registry from CMDB/ServiceNow for live vendor and agreement data.
+- **Live Integrations**: Seed the Domain registry from CMDB/ServiceNow/Internal Tool for live vendor and agreement data.
 - **Warm Pools**: Use `--min-instances 1` to keep corpus embeddings warm for faster responses.
 
 See `architecture.svg` for a system diagram detailing the AI vs. deterministic split and the GCP service map.
